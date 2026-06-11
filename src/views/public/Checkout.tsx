@@ -58,9 +58,22 @@ export const Checkout: React.FC = () => {
           shipping_address: `${recipient.street} ${recipient.number}${recipient.department ? ', ' + recipient.department : ''}, ${recipient.city}`,
           items: items.map(i => ({ product_id: i.product.id, quantity: i.quantity })),
         };
-      await api.post('/orders/guest', payload);
+      const response = await api.post('/orders/guest', payload);
+      const order = response.data.data;
+
+      // Guardar el código de seguimiento en localStorage para consultas futuras
+      const recentOrders = JSON.parse(localStorage.getItem('recent_orders') || '[]');
+      if (!recentOrders.some((o: any) => o.code === order.tracking_code)) {
+        recentOrders.unshift({
+          code: order.tracking_code,
+          date: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
+          total: order.total_amount,
+        });
+        localStorage.setItem('recent_orders', JSON.stringify(recentOrders.slice(0, 5))); // Guardar últimos 5 pedidos
+      }
+
       clearCart();
-      navigate('/checkout/success');
+      navigate(`/track?code=${order.tracking_code}`);
     } catch (e: any) {
       setError(e?.response?.data?.message || 'Error al crear el pedido');
     } finally {

@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { Plus, Edit2, Trash2, X } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Product } from '../../types';
+import type { Product } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Vista de gestión de inventario para Administradores

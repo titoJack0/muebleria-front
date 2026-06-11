@@ -4,22 +4,20 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { PublicLayout } from '../components/layout/PublicLayout';
 import { AdminLayout } from '../components/layout/AdminLayout';
 
-// Importación de vistas públicas
+// Importación de vistas
 import { Home } from '../views/public/Home';
 import { Catalog } from '../views/public/Catalog';
 import { Login } from '../views/auth/Login';
 import { Checkout } from '../views/public/Checkout';
-
-
-// Componentes temporales
-const ProductDetail = () => <div className="p-8">Product Detail</div>;
-const OrderTracking = () => <div className="p-8">Order Tracking</div>;
-const Register = () => <div className="p-8">Register</div>;
-const CustomerDashboard = () => <div className="p-8">Customer Dashboard</div>;
-const AdminDashboard = () => <div className="p-8">Admin Dashboard</div>;
-const Inventory = () => <div className="p-8">Inventory</div>;
-const OrderManagement = () => <div className="p-8">Order Management</div>;
-const DeliveryView = () => <div className="p-8">Delivery View</div>;
+import { ProductDetail } from '../views/public/ProductDetail';
+import { OrderTracking } from '../views/public/OrderTracking';
+import { Register } from '../views/auth/Register';
+import { CustomerDashboard } from '../views/customer/Dashboard';
+import { AdminDashboard } from '../views/admin/Dashboard';
+import { Inventory } from '../views/admin/Inventory';
+import { OrderManagement } from '../views/admin/OrderManagement';
+import { DeliveryView } from '../views/delivery/DeliveryView';
+import HomePremium from '../views/HomePremium';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -27,7 +25,7 @@ export const AppRouter: React.FC = () => {
       <Routes>
         {/* Rutas con Public Layout */}
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomePremium />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="/track" element={<OrderTracking />} />

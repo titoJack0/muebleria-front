@@ -1,28 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
-import { Input } from '../../components/ui/Input';
+// import { Input } from '../../components/ui/Input'; // Comentado porque no se usa por ahora
 import { useProducts } from '../../hooks/useProducts';
 import { useCart } from '../../context/CartContext';
+import axios from 'axios';
+import { OrderStatus } from '../../components/OrderStatus';
+import { CvuDisplay } from '../../components/CvuDisplay';
 
 // URL base de tu backend para las imágenes (ajústala si es diferente)
 const BACKEND_URL = 'http://127.0.0.1:8000';
 
 export const Home: React.FC = () => {
+  // 1. Llamada a hooks y declaración de variables
   const { products, loading: isLoading } = useProducts(1, 9);
   const { addToCart } = useCart();
   const featured = products.slice(0, 3);
 
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [order, setOrder] = useState<any>(null);
+  const [loadingOrder, setLoadingOrder] = useState(false);
+
+  // 2. Función para manejar la creación de la orden
+  const handleCreateOrder = async () => {
+    setLoadingOrder(true);
+    try {
+      const payload = {
+        email: 'asd@das',
+        postal_code: '123',
+        recipient_name: 'asd',
+        recipient_last_name: 'asd',
+        phone: '213',
+        street: 'asd',
+        number: 'asd',
+        apartment: '',
+        neighborhood: '',
+        city: 'asdasd',
+        shipping_address: 'asd asd, asdasd',
+        items: [{ product_id: 1, quantity: 1 }],
+      };
+      const response = await axios.post(`${BACKEND_URL}/api/v1/orders/guest`, payload);
+      setOrder(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingOrder(false);
+      setShowConfirm(false);
+    }
+  };
+
+  // 3. Renderizado ÚNICO del componente
   return (
     <>
       {isLoading && (
         <div className="flex justify-center items-center h-screen">Cargando...</div>
       )}
+
       {!isLoading && (
         <div className="flex flex-col">
-          {/* Hero Section */}
+          {/* --- Hero Section --- */}
           <section className="relative flex h-[85vh] w-full items-center justify-center overflow-hidden bg-wood-dark">
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-deepBlack/80 to-transparent z-10" />
@@ -50,7 +88,6 @@ export const Home: React.FC = () => {
                 </p>
                 <div className="mt-10 flex gap-4">
                   <Link to="/catalog">
-                    <Input placeholder="Buscar productos..." className="pl-9" />
                     <Button size="lg" className="gap-2 bg-gold text-deepBlack hover:bg-gold/80">
                       Ver Colección <ArrowRight className="h-5 w-5" />
                     </Button>
@@ -60,7 +97,7 @@ export const Home: React.FC = () => {
             </div>
           </section>
 
-          {/* Featured Products Section */}
+          {/* --- Featured Products Section --- */}
           <section className="bg-offWhite py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mb-12 flex items-end justify-between">
@@ -79,6 +116,7 @@ export const Home: React.FC = () => {
                 {featured.map((product) => {
                   const primaryImage = product.images?.find((img) => img.is_primary) || product.images?.[0];
                   const imageUrl = primaryImage ? `${BACKEND_URL}${primaryImage.url}` : null;
+
                   return (
                     <motion.div
                       key={product.id}
@@ -86,19 +124,11 @@ export const Home: React.FC = () => {
                       className="group cursor-pointer rounded-sm bg-white p-4 shadow-sm transition-shadow hover:shadow-xl border border-wood/5"
                     >
                       <div className="relative aspect-square overflow-hidden rounded-sm bg-wood/5">
-                        <Button 
-                           size="sm" 
-                           variant="outline"
-                           onClick={() => addToCart(product, 1)}
-                         >
-                           Añadir al Carrito
-                         </Button>
+                        <Button size="sm" variant="outline" onClick={() => addToCart(product, 1)}>
+                          Añadir al Carrito
+                        </Button>
                         {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt={product.name}
-                            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
+                          <img src={imageUrl} alt={product.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-earth/50 text-sm">
                             Imagen no disponible
@@ -118,6 +148,33 @@ export const Home: React.FC = () => {
               </div>
             </div>
           </section>
+
+          {/* --- Order Confirmation Section --- */}
+          <section className="my-8 text-center">
+            <Button onClick={() => setShowConfirm(true)} disabled={loadingOrder}>Realizar Pedido</Button>
+          </section>
+
+          {/* --- Confirmation Modal --- */}
+          {showConfirm && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+              <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                <h2 className="text-xl font-bold mb-4">Confirmar Pedido</h2>
+                <p className="mb-6">¿Estás seguro de que deseas crear el pedido?</p>
+                <div className="flex justify-end gap-4">
+                  <Button variant="secondary" onClick={() => setShowConfirm(false)} disabled={loadingOrder}>Cancelar</Button>
+                  <Button onClick={handleCreateOrder} disabled={loadingOrder}>Confirmar</Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- Order Status Display --- */}
+          {order && (
+            <div className="my-4 text-center">
+              <OrderStatus order={order} />
+              {order.status === 'waiting_payment' && <CvuDisplay />}
+            </div>
+          )}
         </div>
       )}
     </>
