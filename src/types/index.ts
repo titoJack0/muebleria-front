@@ -17,19 +17,19 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  description: string;
+  description?: string;
 }
 
 export interface Product {
   id: number;
-  category_id: number;
+  category_id?: number;
   name: string;
   slug: string;
   description: string;
   price: number;
   stock: number;
-  dimensions: string;
-  wood_type: string;
+  dimensions?: string;
+  wood_type?: string;
   status: 'active' | 'draft';
   // 3. CAMBIO AQUÍ: Cambia string[] por el array de objetos ProductImage
   images: ProductImage[];

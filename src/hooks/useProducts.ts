@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-
-export type Image = { id: number; url: string; is_primary: boolean };
-export type Category = { id: number; name: string; slug: string };
-export type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  stock: number;
-  dimensions?: string;
-  wood_type?: string;
-  status: string;
-  category: Category;
-  images: Image[];
-};
+import type { Product } from '../types';
 
 export const useProducts = (
   page = 1,

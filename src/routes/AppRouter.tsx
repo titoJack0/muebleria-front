@@ -5,7 +5,6 @@ import { PublicLayout } from '../components/layout/PublicLayout';
 import { AdminLayout } from '../components/layout/AdminLayout';
 
 // Importación de vistas
-import { Home } from '../views/public/Home';
 import { Catalog } from '../views/public/Catalog';
 import { Login } from '../views/auth/Login';
 import { Checkout } from '../views/public/Checkout';
@@ -29,16 +28,17 @@ export const AppRouter: React.FC = () => {
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="/track" element={<OrderTracking />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/checkout" element={<Checkout />} />
-
           
           {/* Cliente */}
           <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
             <Route path="/dashboard" element={<CustomerDashboard />} />
           </Route>
         </Route>
+
+        {/* Auth routes without PublicLayout */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Rutas con Admin Layout */}
         <Route element={<ProtectedRoute allowedRoles={['admin', 'employee', 'delivery']} />}>

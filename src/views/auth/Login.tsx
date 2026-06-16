@@ -7,7 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../context/AuthContext';
-import type { User } from '../../types';
+import api, { apiRoot } from '../../services/api';
+
 
 // Esquema de validación usando Zod
 const loginSchema = z.object({
@@ -22,18 +23,41 @@ export const Login: React.FC = () => {
     resolver: zodResolver(loginSchema)
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
-    // Simulación de llamada a la API
-    setTimeout(() => {
-      const mockUser: User = { id: 1, name: "John Doe", email: data.email, role: "customer" };
-      login("mock_token_123", mockUser);
-      navigate('/dashboard');
-    }, 1500);
+    setLoginError(null);
+    try {
+      // 1) Obtener cookie CSRF para Sanctum
+      await apiRoot.get('/sanctum/csrf-cookie');
+
+      // 2) Llamar al endpoint de login
+      const res = await api.post('/login', data);
+      
+      const token = res.data.access_token;
+      const user = res.data.user;
+
+      login(token, user);
+      
+      if (user.role === 'admin' || user.role === 'employee') {
+        navigate('/admin');
+      } else if (user.role === 'delivery') {
+        navigate('/delivery');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (e: any) {
+      console.error(e);
+      setLoginError(e.response?.data?.message || 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -55,6 +79,11 @@ export const Login: React.FC = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          {loginError && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200">
+              {loginError}
+            </div>
+          )}
           <div className="space-y-4 rounded-md shadow-sm">
             <Input
               id="email"
@@ -104,3 +133,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default Login;

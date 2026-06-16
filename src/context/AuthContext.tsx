@@ -5,7 +5,7 @@ import api from '../services/api';
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (token: string, user: User) => void;
+  login: (token: string | null, user: User) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -18,28 +18,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Hook para verificar si hay un token guardado al recargar la página y obtener los datos del usuario
+  // Hook para verificar si hay una sesión activa o token al recargar la página y obtener los datos del usuario
   useEffect(() => {
     const fetchUser = async () => {
-      if (token) {
-        try {
-          const response = await api.get('/user');
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user data", error);
-          logout();
-        }
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        setIsLoading(false);
+        return;
       }
-      setIsLoading(false);
+
+      try {
+        // Intentar obtener el usuario
+        const response = await api.get('/user');
+        setUser(response.data);
+      } catch (error) {
+        // No autenticado o token inválido
+        console.debug('No authenticated user on mount', error);
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('token');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchUser();
-  }, [token]);
+  }, []); // se ejecuta una vez al montar
 
-  // Función para iniciar sesión y guardar credenciales
-  const login = (newToken: string, userData: User) => {
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
+  // Función para iniciar sesión y guardar credenciales (token opcional, ya que podemos usar cookies de sesión)
+  const login = (newToken: string | null, userData: User) => {
+    if (newToken) {
+      localStorage.setItem('token', newToken);
+      setToken(newToken);
+    } else {
+      localStorage.removeItem('token');
+      setToken(null);
+    }
     setUser(userData);
   };
 
@@ -48,6 +62,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    // Intenta hacer logout en backend si es necesario
+    try {
+      api.post('/logout').catch(() => {});
+    } catch (e) {}
   };
 
   return (

@@ -7,18 +7,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#042c33',
-        secondary: '#a47c5c',
-        accent: '#d18d6c',
-        accentHover: '#d28e74',
-        bgLight: '#d2c0a9',
-        textColor: '#244444',
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        accentHover: 'var(--color-accent-hover)',
+        bgLight: 'var(--color-bg-light)',
+        textColor: 'var(--color-text)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
       },
       borderRadius: {
-        md: '12px',
+        md: 'var(--radius-md)',
+        sm: 'var(--radius-sm)',
       },
       transitionDuration: {
-        md: '300ms',
+        md: 'var(--transition-md)',
       }
     },
   },

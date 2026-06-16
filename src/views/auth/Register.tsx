@@ -27,7 +27,7 @@ export const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onSubmit = async (data: RegisterForm) => {
+  const onSubmit = async (_data: RegisterForm) => {
     setIsLoading(true);
     // Simulación de llamada a la API
     setTimeout(() => {

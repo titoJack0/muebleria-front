@@ -60,15 +60,20 @@ export const Drawer: React.FC = () => {
                     <div key={item.product.id} className="flex gap-4">
                       {/* Imagen simulada del producto */}
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md bg-white border border-wood/10">
-                        {item.product.image_url ? (
-                          <img
-                            src={item.product.image_url}
-                            alt={item.product.name}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-wood/5 text-xs text-wood">Sin Imagen</div>
-                        )}
+                        {(() => {
+                          const primaryImage = item.product.images?.find((img) => img.is_primary) || item.product.images?.[0];
+                          const BACKEND_URL = 'http://127.0.0.1:8000';
+                          const imageUrl = primaryImage ? `${BACKEND_URL}${primaryImage.url}` : null;
+                          return imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.product.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-wood/5 text-xs text-wood">Sin Imagen</div>
+                          );
+                        })()}
                       </div>
 
                       {/* Detalles del Producto */}
