@@ -22,6 +22,7 @@ interface Order {
   recipient_name?: string;
   user?: { id: number; name: string; email?: string } | null;
   items?: OrderItem[];
+  receipt_url?: string;
 }
 
 interface PaginationMeta {
@@ -46,15 +47,15 @@ const TABS = [
 
 // Colores de badge por estado
 const STATUS_COLORS: Record<string, string> = {
-  pending:               'bg-yellow-100 text-yellow-800',
-  revisando_solicitud:   'bg-purple-100 text-purple-800',
-  waiting_payment:       'bg-orange-100 text-orange-800',
-  payment_confirmed:     'bg-blue-100 text-blue-800',
-  preparing:             'bg-indigo-100 text-indigo-800',
-  in_transit:            'bg-sky-100 text-sky-800',
-  delivered:             'bg-green-100 text-green-800',
-  completed:             'bg-teal-100 text-teal-800',
-  cancelled:             'bg-red-100 text-red-800',
+  pending: 'bg-yellow-100 text-yellow-800',
+  revisando_solicitud: 'bg-purple-100 text-purple-800',
+  waiting_payment: 'bg-orange-100 text-orange-800',
+  payment_confirmed: 'bg-blue-100 text-blue-800',
+  preparing: 'bg-indigo-100 text-indigo-800',
+  in_transit: 'bg-sky-100 text-sky-800',
+  delivered: 'bg-green-100 text-green-800',
+  completed: 'bg-teal-100 text-teal-800',
+  cancelled: 'bg-red-100 text-red-800',
 };
 
 export const OrderManagement: React.FC = () => {
@@ -141,11 +142,11 @@ export const OrderManagement: React.FC = () => {
     try {
       const res = await api.patch(`/admin/orders/${selectedOrder.id}/status`, { status: newStatus });
       const updated: Order = res.data.data ?? res.data;
-      
+
       // Invalidar cachés afectados (el tab actual y el nuevo status)
       setCache(prev => {
         const next = { ...prev };
-        
+
         // Si el estado cambió, lo removemos del tab actual
         if (updated.status !== activeTab) {
           if (next[activeTab]) {
@@ -216,17 +217,15 @@ export const OrderManagement: React.FC = () => {
               <button
                 key={status}
                 onClick={() => handleTabChange(status)}
-                className={`relative px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                  isActive
-                    ? 'text-wood-dark border-b-2 border-wood'
-                    : 'text-earth hover:text-wood-dark hover:bg-wood/5'
-                }`}
+                className={`relative px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${isActive
+                  ? 'text-wood-dark border-b-2 border-wood'
+                  : 'text-earth hover:text-wood-dark hover:bg-wood/5'
+                  }`}
               >
                 {ORDER_STATUS_LABELS[status] ?? status}
                 {count !== undefined && (
-                  <span className={`ml-2 rounded-full px-1.5 py-0.5 text-xs font-semibold ${
-                    isActive ? 'bg-wood text-white' : 'bg-offWhite text-earth'
-                  }`}>
+                  <span className={`ml-2 rounded-full px-1.5 py-0.5 text-xs font-semibold ${isActive ? 'bg-wood text-white' : 'bg-offWhite text-earth'
+                    }`}>
                     {count}
                   </span>
                 )}
@@ -384,6 +383,29 @@ export const OrderManagement: React.FC = () => {
               </div>
 
               {/* Items del pedido */}
+              {/* Sección del comprobante de pago */}
+              {selectedOrder.receipt_url && (
+                <div className="mb-5 p-4 bg-offWhite border border-wood/10 rounded-sm">
+                  <p className="text-sm font-medium text-wood-dark mb-2">Comprobante de Pago adjunto:</p>
+
+                  <div className="flex items-center gap-4">
+                    {/* Miniatura */}
+                    <div className="h-16 w-16 rounded border border-wood/20 overflow-hidden bg-white">
+                      <img src={`http://127.0.0.1:8000${selectedOrder.receipt_url}`} alt="Comprobante" className="w-full h-full object-cover" />
+                    </div>
+
+                    {/* Link para ver en grande */}
+                    <a
+                      href={`http://127.0.0.1:8000${selectedOrder.receipt_url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-semibold text-accent hover:text-accentHover underline"
+                    >
+                      Ver en pantalla completa
+                    </a>
+                  </div>
+                </div>
+              )}
               {selectedOrder.items && selectedOrder.items.length > 0 && (
                 <div className="border-t border-wood/10 pt-4">
                   <h3 className="font-medium text-wood-dark mb-3">Productos del pedido</h3>
