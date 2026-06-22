@@ -16,7 +16,7 @@ import { AdminDashboard } from '../views/admin/Dashboard';
 import { Inventory } from '../views/admin/Inventory';
 import { OrderManagement } from '../views/admin/OrderManagement';
 import { DeliveryView } from '../views/delivery/DeliveryView';
-import HomePremium from '../views/HomePremium';
+import { Home } from '../views/public/Home';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -24,12 +24,12 @@ export const AppRouter: React.FC = () => {
       <Routes>
         {/* Rutas con Public Layout */}
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<HomePremium />} />
+          <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="/track" element={<OrderTracking />} />
           <Route path="/checkout" element={<Checkout />} />
-          
+
           {/* Cliente */}
           <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
             <Route path="/dashboard" element={<CustomerDashboard />} />
