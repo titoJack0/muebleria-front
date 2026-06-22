@@ -1,4 +1,5 @@
 import React from 'react';
+import { Heart } from 'lucide-react';
 
 // Pie de página de la aplicación pública
 export const Footer: React.FC = () => {
@@ -10,7 +11,7 @@ export const Footer: React.FC = () => {
             Timber<span className="text-gold">&</span>Furniture
           </span>
           <p className="mt-4 text-sm text-earth">
-            Crafting luxury and comfort for your living spaces. 
+            Crafting luxury and comfort for your living spaces.
             Premium quality wood, timeless designs.
           </p>
         </div>
@@ -32,7 +33,20 @@ export const Footer: React.FC = () => {
         </div>
       </div>
       <div className="container mx-auto mt-12 border-t border-earth/20 px-4 pt-8 text-center text-sm text-earth sm:px-6 lg:px-8">
-        &copy; {new Date().getFullYear()} Timber & Furniture Store. All rights reserved.
+        &copy; {new Date().getFullYear()} Maderas Nativas. All rights reserved.
+        <div className="mt-4 flex items-center justify-center gap-1.5 text-sm text-earth">
+          <span>Hecho con</span>
+          <Heart className="h-4 w-4 text-red-500 fill-red-500" />
+          <span>por</span>
+          <a
+            href="https://tu-link-aqui.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-gold hover:underline transition-colors"
+          >
+            MrJack
+          </a>
+        </div>
       </div>
     </footer>
   );

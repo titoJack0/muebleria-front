@@ -30,17 +30,32 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? 'bg-offWhite/90 shadow-sm backdrop-blur-md' : 'bg-transparent py-4'
-      }`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'bg-offWhite/90 shadow-sm backdrop-blur-md' : 'bg-transparent py-4'
+        }`}
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        
+      <div className="container mx-auto flex h-11 items-center justify-between px-4 sm:px-6 lg:px-8">
+
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <span className="font-serif text-2xl font-bold tracking-tight text-wood-dark">
-            Timber<span className="text-gold">&</span>Furniture
-          </span>
+        <Link to="/" className="flex items-center gap-4 group">
+          {/* CONTENEDOR DEL LOGO: Forzamos un tamaño grande (h-16 w-16 = 64px) */}
+          {/* Al poner h-16 y w-16 fijas, el SVG se ve sí o sí, sin importar cómo esté exportado */}
+          <div className="flex items-center justify-center h-16 w-28 shrink-0">
+            <img
+              src="/logo.svg"
+              alt="Maderas Nativas"
+              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+
+          {/* TEXTO DE LA MARCA Y ESLOGAN AL LADO */}
+          <div className="flex flex-col justify-center">
+            <span className="font-serif text-2xl font-bold text-wood-dark tracking-wide leading-none group-hover:text-gold transition-colors">
+              Maderas Nativas
+            </span>
+            <span className="text-xs text-earth mt-1.5 font-medium tracking-normal italic">
+              Calidad para la construcción
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}
@@ -51,7 +66,7 @@ export const Navbar: React.FC = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          
+
           {/* Cart Toggle */}
           <button
             onClick={toggleCart}

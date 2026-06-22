@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { LogOut, Home, PackagePlus, Bell } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { Heart } from 'lucide-react';
 
 // Layout para el panel de administración
 export const AdminLayout: React.FC = () => {
@@ -34,7 +35,7 @@ export const AdminLayout: React.FC = () => {
             <h1 className="font-serif text-2xl font-bold text-wood-dark">{getTitle()}</h1>
             <p className="text-sm text-earth">Bienvenido, {user?.name || 'Administrador'}</p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {/* Acciones Rápidas */}
             <div className="hidden md:flex items-center gap-2 border-r border-wood/20 pr-4">
@@ -60,7 +61,7 @@ export const AdminLayout: React.FC = () => {
             </div>
 
             {/* Logout */}
-            <button 
+            <button
               onClick={handleLogout}
               className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
             >
@@ -76,8 +77,21 @@ export const AdminLayout: React.FC = () => {
 
         {/* Pie de Página Privado */}
         <footer className="border-t border-wood/20 bg-white p-6 text-center text-sm text-earth">
-          <p>&copy; {new Date().getFullYear()} Timber & Furniture Store. Panel de Administración Privado.</p>
+          <p>&copy; {new Date().getFullYear()} Maderas Nativas. Panel de Administración Privado.</p>
           <p className="mt-1 text-xs opacity-70">Sistema reservado para uso interno. Rol actual: <span className="font-semibold uppercase">{user?.role}</span></p>
+          <div className="mt-4 flex items-center justify-center gap-1.5 text-sm text-earth">
+            <span>Hecho con</span>
+            <Heart className="h-4 w-4 text-red-500 fill-red-500" />
+            <span>por</span>
+            <a
+              href="https://tu-link-aqui.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-gold hover:underline transition-colors"
+            >
+              MrJack
+            </a>
+          </div>
         </footer>
       </div>
     </div>

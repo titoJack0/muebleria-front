@@ -62,15 +62,7 @@ export const OrderTracking: React.FC = () => {
       setIsSearching(false);
     }
   };
-  /*
-    useEffect(() => {
-      const saved = localStorage.getItem('recent_orders');
-      
-      if (saved) {
-        setRecentOrders(JSON.parse(saved));
-      }
-    }, []);
-  */
+
   useEffect(() => {
     if (order && order.status === 'waiting_payment') {
       api.get('/payment-settings')
@@ -82,6 +74,13 @@ export const OrderTracking: React.FC = () => {
   }, [order]);
 
   useEffect(() => {
+
+    const saved = localStorage.getItem('recent_orders');
+
+    if (saved) {
+      setRecentOrders(JSON.parse(saved));
+    }
+
     const codeFromUrl = searchParams.get('code');
     if (codeFromUrl && codeFromUrl.length === 8) {
       const upperCode = codeFromUrl.toUpperCase();

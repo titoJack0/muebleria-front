@@ -389,14 +389,21 @@ export const OrderManagement: React.FC = () => {
                   <p className="text-sm font-medium text-wood-dark mb-2">Comprobante de Pago adjunto:</p>
 
                   <div className="flex items-center gap-4">
+                    {/* Función auxiliar (puedes ponerla antes del return del componente) */}
+                    {/* const getImageUrl = (url: string) => url.startsWith('http') ? url : `http://127.0.0.1:8000${url.startsWith('/') ? '' : '/'}${url}`; */}
+
                     {/* Miniatura */}
                     <div className="h-16 w-16 rounded border border-wood/20 overflow-hidden bg-white">
-                      <img src={`http://127.0.0.1:8000${selectedOrder.receipt_url}`} alt="Comprobante" className="w-full h-full object-cover" />
+                      <img
+                        src={selectedOrder.receipt_url.startsWith('http') ? selectedOrder.receipt_url : `http://127.0.0.1:8000${selectedOrder.receipt_url}`}
+                        alt="Comprobante"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
 
                     {/* Link para ver en grande */}
                     <a
-                      href={`http://127.0.0.1:8000${selectedOrder.receipt_url}`}
+                      href={selectedOrder.receipt_url.startsWith('http') ? selectedOrder.receipt_url : `http://127.0.0.1:8000${selectedOrder.receipt_url}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-semibold text-accent hover:text-accentHover underline"

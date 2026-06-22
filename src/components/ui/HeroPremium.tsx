@@ -22,6 +22,17 @@ export const HeroPremium: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-primary/95 z-10"></div>
       </div>
 
+      <div className="max-w-3xl text-center">
+        {/* Título Principal */}
+        <h1 className="font-serif text-5xl font-bold text-wood-dark sm:text-6xl lg:text-7xl">
+          Maderas Nativas
+        </h1>
+        {/* Nuevo Eslogan */}
+        <p className="mt-6 text-xl text-earth leading-relaxed max-w-2xl mx-auto">
+          Calidad para la construcción
+        </p>
+      </div>
+
       {/* Contenido Principal */}
       <div className="container relative z-20 mx-auto px-6 text-center">
         <motion.div
@@ -31,7 +42,7 @@ export const HeroPremium: React.FC = () => {
           className="max-w-4xl mx-auto"
         >
           <h2 className="text-accent uppercase tracking-[0.3em] text-xs md:text-sm font-semibold mb-6 drop-shadow-md">
-            Timber & Furniture Store
+            Maderas Nativas
           </h2>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-[1.1] mb-8 drop-shadow-lg">
